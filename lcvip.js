@@ -1256,7 +1256,7 @@ app.get("/api/taixiumd5/lc79", async () => {
 
     if (!lastResult || !currentPrediction) {
         return {
-            id: "anhbantool1",
+            id: "binhoi",
             phien_truoc: null,
             xuc_xac1: null,
             xuc_xac2: null,
@@ -1271,7 +1271,7 @@ app.get("/api/taixiumd5/lc79", async () => {
     }
 
     return {
-        id: "anhbantool1",
+        id: "binhoi",
         phien_truoc: lastResult.session,
         xuc_xac1: lastResult.dice[0],
         xuc_xac2: lastResult.dice[1],
