@@ -189,11 +189,6 @@ function detectPatternType(runs) {
         if (lengths.length >= 5 &&
             lengths[0] === 3 && lengths[1] === 1 && lengths[2] === 3 && lengths[3] === 1 && lengths[4] === 3) {
             return '3_1_3_pattern';
-
-        // 4-1-4 Pattern
-        if (lengths.length >= 5 &&
-            lengths[0] === 3 && lengths[1] === 1 && lengths[2] === 3 && lengths[3] === 1 && lengths[4] === 3) {
-            return '4_1_4_pattern';
         }
     }
     
