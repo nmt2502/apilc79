@@ -1206,37 +1206,49 @@ async function fetchAndProcessHistory() {
         const response = await fetch(API_URL);
         const data = await response.json();
         const newHistory = parseLines(data);
-        
-        if (newHistory.length === 0) {
+
+        if (!newHistory.length) {
             console.log("⚠️ Không có dữ liệu từ API.");
             return;
         }
 
         const lastSessionInHistory = newHistory.at(-1);
 
+        // ===== LOAD LẦN ĐẦU =====
         if (!currentSessionId) {
             seiuManager.loadInitial(newHistory);
-            txHistory = newHistory;
+
+            // clone để tránh reference bug
+            txHistory = [...newHistory];
+
             currentSessionId = lastSessionInHistory.session;
             console.log(`✅ Đã tải ${newHistory.length} phiên lịch sử.`);
-        } else if (lastSessionInHistory.session > currentSessionId) {
-            const newRecords = newHistory.filter(r => r.session > currentSessionId);
-            
-            for (const record of newRecords) {
-                seiuManager.pushRecord(record);
-                txHistory.push(record);
+            return;
+        }
+
+        // ===== CÓ PHIÊN MỚI =====
+        if (lastSessionInHistory.session > currentSessionId) {
+            // 🔥 chỉ lấy record mới nhất (fix +2 pattern)
+            const latestRecord = lastSessionInHistory;
+
+            // update AI
+            seiuManager.pushRecord(latestRecord);
+
+            // chống duplicate cứng
+            if (!txHistory.some(r => r.session === latestRecord.session)) {
+                txHistory.push(latestRecord);
             }
-            
-            // Giữ lịch sử gọn
+
+            // giữ lịch sử gọn
             if (txHistory.length > 350) {
                 txHistory = txHistory.slice(-300);
             }
-            
-            currentSessionId = lastSessionInHistory.session;
-            if (newRecords.length > 0) {
-                console.log(`🆕 Cập nhật ${newRecords.length} phiên. Phiên cuối: ${currentSessionId}`);
-            }
+
+            currentSessionId = latestRecord.session;
+
+            console.log(`🆕 Phiên mới: ${currentSessionId}`);
         }
+
     } catch (e) {
         console.error("❌ Lỗi fetch dữ liệu:", e.message);
     }
@@ -1256,7 +1268,7 @@ app.get("/api/taixiumd5/lc79", async () => {
 
     if (!lastResult || !currentPrediction) {
         return {
-            id: "binhoi",
+            id: "Minh Tuấn Bán Tool",
             phien_truoc: null,
             xuc_xac1: null,
             xuc_xac2: null,
@@ -1271,7 +1283,7 @@ app.get("/api/taixiumd5/lc79", async () => {
     }
 
     return {
-        id: "binhoi",
+        id: "Minh Tuấn Bán Tool",
         phien_truoc: lastResult.session,
         xuc_xac1: lastResult.dice[0],
         xuc_xac2: lastResult.dice[1],
