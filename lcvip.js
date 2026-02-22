@@ -189,6 +189,11 @@ function detectPatternType(runs) {
         if (lengths.length >= 5 &&
             lengths[0] === 3 && lengths[1] === 1 && lengths[2] === 3 && lengths[3] === 1 && lengths[4] === 3) {
             return '3_1_3_pattern';
+
+        // 4-1-4 Pattern
+        if (lengths.length >= 5 &&
+            lengths[0] === 3 && lengths[1] === 1 && lengths[2] === 3 && lengths[3] === 1 && lengths[4] === 3) {
+            return '4_1_4_pattern';
         }
     }
     
@@ -259,12 +264,12 @@ function predictNextFromPattern(patternType, runs, lastTx) {
             return null;
             
         case 'long_run_pattern':
-            // Cầu bệt dài: nếu quá dài (>7) thì dự đoán bẻ cầu
-            if (lastRun.len > 7) {
+            // Cầu bệt dài: nếu quá dài (>5) thì dự đoán bẻ cầu
+            if (lastRun.len > 5) {
                 return lastRun.val === 'T' ? 'X' : 'T';
             }
-            // Nếu còn trong ngưỡng (4-7) thì tiếp tục
-            if (lastRun.len >= 4 && lastRun.len <= 7) {
+            // Nếu còn trong ngưỡng (6-7) thì tiếp tục
+            if (lastRun.len >= 6 && lastRun.len <= 7) {
                 return lastRun.val;
             }
             return null;
